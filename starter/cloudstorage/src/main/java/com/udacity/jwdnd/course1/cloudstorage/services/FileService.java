@@ -44,4 +44,9 @@ public class FileService {
         var userId = this.userMapper.getUser(userName).getUserId();
         this.fileMapper.deleteByFileNameAndUserId(fileName, userId);
     }
+
+    public File getFile(String fileName, String userName) {
+        var userId = this.userMapper.getUser(userName).getUserId();
+        return this.fileMapper.getByFileNameAndUserId(fileName, userId);
+    }
 }

@@ -1,5 +1,6 @@
 package com.udacity.jwdnd.course1.cloudstorage.controller;
 
+import com.udacity.jwdnd.course1.cloudstorage.services.DuplicateFileNameException;
 import com.udacity.jwdnd.course1.cloudstorage.services.FileService;
 
 import org.springframework.core.io.InputStreamResource;
@@ -36,19 +37,20 @@ public class HomeController {
     }
 
     @PostMapping("upload-file")
-    public String handleFileUpload(Authentication authentication,
-                                   @RequestParam("fileUpload") MultipartFile fileUpload,
-                                   Model model) {
+    public String uploadFile(Authentication authentication,
+                             @RequestParam("fileUpload") MultipartFile fileUpload,
+                             Model model) {
 
         String userName = authentication.getName();
 
         try {
             this.fileService.saveFile(fileUpload, userName);
-            model.addAttribute("errorType", -1);
+            model.addAttribute("success", true);
 
-        } catch (IOException e) {
-            model.addAttribute("errorType", 1);
+        } catch (DuplicateFileNameException | IOException e) {
             e.printStackTrace();
+            model.addAttribute("errorMessage", e.toString());
+            model.addAttribute("success", false);
         }
 
         return "result";

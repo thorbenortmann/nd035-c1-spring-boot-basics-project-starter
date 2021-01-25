@@ -21,12 +21,18 @@ public class FileService {
         this.userMapper = userMapper;
     }
 
-    public void saveFile(MultipartFile fileUpload, String userName) throws IOException {
+    public void saveFile(MultipartFile fileUpload, String userName) throws IOException, DuplicateFileNameException {
 
         var user = this.userMapper.getUser(userName);
-
         var userId = user.getUserId();
         var fileName = fileUpload.getOriginalFilename();
+
+        if (this.fileMapper.getFileNamesForUser(userId).contains(fileName)) {
+            throw new DuplicateFileNameException(
+                    String.format("There already is a file with the name: '%s'", fileName)
+            );
+        }
+
         var contentType = fileUpload.getContentType();
         var fileSize = String.valueOf(fileUpload.getSize());
         var fileBytes = fileUpload.getBytes();

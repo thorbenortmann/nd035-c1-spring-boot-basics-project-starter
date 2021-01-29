@@ -1,7 +1,9 @@
 package com.udacity.jwdnd.course1.cloudstorage.controller;
 
+import com.udacity.jwdnd.course1.cloudstorage.model.NoteForm;
 import com.udacity.jwdnd.course1.cloudstorage.services.DuplicateFileNameException;
 import com.udacity.jwdnd.course1.cloudstorage.services.FileService;
+import com.udacity.jwdnd.course1.cloudstorage.services.NoteService;
 
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
@@ -20,18 +22,25 @@ import java.io.IOException;
 public class HomeController {
 
     private final FileService fileService;
+    private final NoteService noteService;
 
-    public HomeController(FileService fileService) {
+    public HomeController(FileService fileService, NoteService noteService) {
         this.fileService = fileService;
+        this.noteService = noteService;
     }
 
     @GetMapping
     public String homeView(Authentication authentication,
+                           @ModelAttribute("newNote") NoteForm newNote,
                            Model model) {
 
         var userName = authentication.getName();
+
         var fileNamesForUser = this.fileService.getFileNamesForUser(userName);
+        var notesForUser = this.noteService.getNotesForUser(userName);
+
         model.addAttribute("fileNames", fileNamesForUser);
+        model.addAttribute("notes", notesForUser);
 
         return "home";
     }

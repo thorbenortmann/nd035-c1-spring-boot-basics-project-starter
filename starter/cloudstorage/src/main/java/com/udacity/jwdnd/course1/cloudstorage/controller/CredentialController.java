@@ -42,8 +42,10 @@ public class CredentialController {
     public String deleteCredential(Authentication authentication,
                                    @PathVariable int credentialId,
                                    Model model) {
-        //TODO: Users should only be able to delete their own notes.
-        this.credentialService.deleteCredentialById(credentialId);
+
+        var userName = authentication.getName();
+        this.credentialService.deleteCredentialById(credentialId, userName);
+
         model.addAttribute("success", true);
         return "result";
     }

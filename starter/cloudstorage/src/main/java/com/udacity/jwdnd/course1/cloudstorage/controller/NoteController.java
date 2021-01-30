@@ -39,8 +39,9 @@ public class NoteController {
     public String deleteNote(Authentication authentication,
                              @PathVariable int noteId,
                              Model model) {
-        //TODO: Users should only be able to delete their own notes.
-        this.noteService.deleteNoteById(noteId);
+
+        var userName = authentication.getName();
+        this.noteService.deleteNoteById(noteId, userName);
         model.addAttribute("success", true);
         return "result";
     }

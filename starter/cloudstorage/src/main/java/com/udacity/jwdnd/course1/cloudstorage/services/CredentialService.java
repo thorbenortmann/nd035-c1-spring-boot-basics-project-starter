@@ -54,8 +54,9 @@ public class CredentialService {
         this.credentialMapper.updateCredential(new Credential(credentialId, url, userNameForCredential, encodedKey, encryptedPassword, userId));
     }
 
-    public void deleteCredentialById(int credentialId) {
-        this.credentialMapper.deleteById(credentialId);
+    public void deleteCredentialById(int credentialId, String userName) {
+        var userId = this.userMapper.getUser(userName).getUserId();
+        this.credentialMapper.deleteById(credentialId, userId);
     }
 
 }

@@ -37,7 +37,8 @@ public class NoteService {
         this.noteMapper.updateNote(newNote);
     }
 
-    public void deleteNoteById(int noteId) {
-        this.noteMapper.deleteById(noteId);
+    public void deleteNoteById(int noteId, String userName) {
+        var userId = this.userMapper.getUser(userName).getUserId();
+        this.noteMapper.deleteById(noteId, userId);
     }
 }

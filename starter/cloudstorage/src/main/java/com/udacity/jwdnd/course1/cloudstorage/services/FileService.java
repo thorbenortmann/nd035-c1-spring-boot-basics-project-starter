@@ -37,7 +37,7 @@ public class FileService {
         var fileSize = String.valueOf(fileUpload.getSize());
         var fileBytes = fileUpload.getBytes();
 
-        this.fileMapper.insert(new File(null, fileName, contentType, fileSize, userId, fileBytes));
+        this.fileMapper.insertFile(new File(null, fileName, contentType, fileSize, userId, fileBytes));
 
     }
 

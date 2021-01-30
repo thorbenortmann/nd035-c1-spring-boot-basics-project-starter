@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("note")
 public class NoteController {
 
-    private NoteService noteService;
+    private final NoteService noteService;
 
     public NoteController(NoteService noteService) {
         this.noteService = noteService;
@@ -42,6 +42,7 @@ public class NoteController {
 
         var userName = authentication.getName();
         this.noteService.deleteNoteById(noteId, userName);
+
         model.addAttribute("success", true);
         return "result";
     }

@@ -17,7 +17,7 @@ public interface FileMapper {
 
     @Insert("INSERT INTO FILES (filename, contenttype, filesize, userid, filedata) VALUES(#{filename}, #{contenttype}, #{filesize}, #{userid}, #{filedata})")
     @Options(useGeneratedKeys = true, keyProperty = "fileid")
-    int insert(File file);
+    int insertFile(File file);
 
     @Delete("DELETE FROM FILES WHERE filename=#{filename} AND userid=#{userid}")
     void deleteByFileNameAndUserId(String filename, Integer userid);

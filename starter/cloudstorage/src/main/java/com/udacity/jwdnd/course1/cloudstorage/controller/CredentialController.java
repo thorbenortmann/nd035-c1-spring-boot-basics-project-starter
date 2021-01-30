@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("credential")
 public class CredentialController {
 
-    private CredentialService credentialService;
-    private UserService userService;
+    private final CredentialService credentialService;
+    private final UserService userService;
 
     public CredentialController(CredentialService credentialService, UserService userService) {
         this.credentialService = credentialService;
@@ -49,5 +49,4 @@ public class CredentialController {
         model.addAttribute("success", true);
         return "result";
     }
-
 }

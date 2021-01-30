@@ -19,7 +19,7 @@ import java.io.IOException;
 @RequestMapping("file")
 public class FileController {
 
-    private FileService fileService;
+    private final FileService fileService;
 
     public FileController(FileService fileService) {
         this.fileService = fileService;
@@ -61,11 +61,13 @@ public class FileController {
 
     @GetMapping("delete-file/{fileName}")
     public String deleteFile(Authentication authentication,
-                             @PathVariable String fileName) {
+                             @PathVariable String fileName,
+                             Model model) {
 
         var userName = authentication.getName();
         this.fileService.deleteFile(fileName, userName);
 
-        return "redirect:/home";
+        model.addAttribute("success", true);
+        return "result";
     }
 }

@@ -27,7 +27,13 @@ public class CredentialController {
                                 Model model) {
 
         var userName = authentication.getName();
-        this.credentialService.addCredential(newCredential, userName);
+
+        if (newCredential.getCredentialId().isEmpty()) {
+            this.credentialService.addCredential(newCredential, userName);
+        } else {
+            this.credentialService.updateCredential(newCredential, userName);
+        }
+
         model.addAttribute("success", true);
         return "result";
     }

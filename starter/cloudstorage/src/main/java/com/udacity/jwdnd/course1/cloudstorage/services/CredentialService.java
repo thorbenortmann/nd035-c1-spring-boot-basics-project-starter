@@ -7,8 +7,6 @@ import com.udacity.jwdnd.course1.cloudstorage.model.CredentialForm;
 
 import org.springframework.stereotype.Service;
 
-import java.security.SecureRandom;
-import java.util.Base64;
 import java.util.List;
 
 @Service
@@ -36,20 +34,28 @@ public class CredentialService {
         var userNameForCredential = credentialForm.getUserName();
         var password = credentialForm.getPassword();
 
-        String encodedKey = this.createEncodedKey();
-        String encryptedPassword = encryptionService.encryptValue(password, encodedKey);
+        var encodedKey = this.encryptionService.createEncodedKey();
+        var encryptedPassword = this.encryptionService.encryptValue(password, encodedKey);
 
-        this.credentialMapper.insert(new Credential(null, url, userNameForCredential, encodedKey, encryptedPassword, userId));
+        this.credentialMapper.insertCredential(new Credential(null, url, userNameForCredential, encodedKey, encryptedPassword, userId));
+    }
+
+    public void updateCredential(CredentialForm credentialForm, String userName) {
+        var userId = this.userMapper.getUser(userName).getUserId();
+
+        var credentialId = Integer.parseInt(credentialForm.getCredentialId());
+        var url = credentialForm.getUrl();
+        var userNameForCredential = credentialForm.getUserName();
+        var password = credentialForm.getPassword();
+
+        var encodedKey = this.encryptionService.createEncodedKey();
+        var encryptedPassword = this.encryptionService.encryptValue(password, encodedKey);
+
+        this.credentialMapper.updateCredential(new Credential(credentialId, url, userNameForCredential, encodedKey, encryptedPassword, userId));
     }
 
     public void deleteCredentialById(int credentialId) {
         this.credentialMapper.deleteById(credentialId);
     }
 
-    private String createEncodedKey() {
-        SecureRandom random = new SecureRandom();
-        byte[] key = new byte[16];
-        random.nextBytes(key);
-        return Base64.getEncoder().encodeToString(key);
-    }
 }

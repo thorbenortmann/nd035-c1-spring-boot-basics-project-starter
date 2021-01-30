@@ -24,7 +24,13 @@ public class NoteController {
                           Model model) {
 
         var userName = authentication.getName();
-        this.noteService.addNote(newNote.getTitle(), newNote.getDescription(), userName);
+
+        if (newNote.getNoteId().isEmpty()) {
+            this.noteService.addNote(newNote, userName);
+        } else {
+            this.noteService.updateNote(newNote, userName);
+        }
+
         model.addAttribute("success", true);
         return "result";
     }

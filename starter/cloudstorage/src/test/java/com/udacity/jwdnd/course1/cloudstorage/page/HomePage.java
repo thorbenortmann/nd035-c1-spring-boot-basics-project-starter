@@ -8,6 +8,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class HomePage {
@@ -38,6 +39,12 @@ public class HomePage {
 
     @FindBy(css=".note-description")
     private List<WebElement> noteDescriptions;
+
+    @FindBy(css=".note-edit-button")
+    private List<WebElement> editNoteButtons;
+
+    @FindBy(css=".note-delete-button")
+    private List<WebElement> deleteNoteButtons;
 
     private final WebDriver webDriver;
 
@@ -74,5 +81,26 @@ public class HomePage {
     public List<String> getNoteDescriptions() {
         new WebDriverWait(webDriver, 2).until(ExpectedConditions.visibilityOf(this.noteTableBody));
         return this.noteDescriptions.stream().map(WebElement::getText).collect(Collectors.toList());
+    }
+
+    public void editFirstNote(String newNoteTitle, String newNoteDescription) {
+
+        new WebDriverWait(webDriver, 2).until(ExpectedConditions.visibilityOf(this.noteTableBody));
+        Optional<WebElement> firstEditNoteButton = this.editNoteButtons.stream().findFirst();
+        firstEditNoteButton.ifPresent(WebElement::click);
+
+        new WebDriverWait(webDriver, 2).until(ExpectedConditions.elementToBeClickable(this.noteTitle));
+        this.noteTitle.clear();
+        this.noteTitle.sendKeys(newNoteTitle);
+
+        this.noteDescription.clear();
+        this.noteDescription.sendKeys(newNoteDescription);
+        this.noteSubmitButton.click();
+    }
+
+    public void deleteFirstNote() {
+        new WebDriverWait(webDriver, 2).until(ExpectedConditions.visibilityOf(this.noteTableBody));
+        Optional<WebElement> firstEditNoteButton = this.deleteNoteButtons.stream().findFirst();
+        firstEditNoteButton.ifPresent(WebElement::click);
     }
 }

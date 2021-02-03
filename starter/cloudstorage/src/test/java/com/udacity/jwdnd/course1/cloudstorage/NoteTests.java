@@ -15,12 +15,11 @@ import org.springframework.boot.web.server.LocalServerPort;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class NoteTests {
 
-    private static boolean testUserIsSignedUp = false;
     private static final String firstName = "testfirstname";
     private static final String lastName = "testlastname";
     private static final String userName = "testusername";
     private static final String password = "testpassword";
-
+    private static int userId = 0;
 
     @LocalServerPort
     private int port;
@@ -37,30 +36,27 @@ public class NoteTests {
     @BeforeEach
     public void beforeEach() {
         this.baseURL = "http://localhost:" + this.port + "/";
-
-        if (!testUserIsSignedUp) {
-            this.signupTestUser();
-            testUserIsSignedUp = true;
-        }
-
         this.driver = new ChromeDriver();
-        driver.get(baseURL + "login");
-        var loginPage = new LoginPage(this.driver);
-        loginPage.login(userName, password);
+        this.signupAndLoginTestUser(userId);
+        userId++;
     }
 
-    private void signupTestUser() {
-        driver = new ChromeDriver();
-        driver.get(baseURL + "signup");
+    private void signupAndLoginTestUser(int userId) {
+        var userName = NoteTests.userName+userId;
+
+        this.driver.get(baseURL + "signup");
         var signupPage = new SignupPage(this.driver);
         signupPage.signup(firstName, lastName, userName, password);
-        driver.quit();
+
+        this.driver.get(baseURL + "login");
+        var loginPage = new LoginPage(this.driver);
+        loginPage.login(userName, password);
     }
 
     @AfterEach
     public void afterEach() {
         if (this.driver != null) {
-            driver.quit();
+            this.driver.quit();
         }
     }
 
@@ -68,7 +64,7 @@ public class NoteTests {
      * Test that notes can be created and are shown to the user.
      */
     @Test
-    public void testNoteCreation() throws InterruptedException {
+    public void testCreateNote() throws InterruptedException {
         // Arrange
         var noteTitle = "Test Note";
         var noteDescription = "Test Note Description";
@@ -112,8 +108,8 @@ public class NoteTests {
         homePage.selectNotesTab();
 
         // Assert
-        Assertions.assertFalse(homePage.getNoteTitles().contains(noteTitle));
-        Assertions.assertFalse(homePage.getNoteDescriptions().contains(noteDescription));
+        Assertions.assertTrue(homePage.getNoteTitles().isEmpty());
+        Assertions.assertTrue(homePage.getNoteDescriptions().isEmpty());
     }
 
     /**

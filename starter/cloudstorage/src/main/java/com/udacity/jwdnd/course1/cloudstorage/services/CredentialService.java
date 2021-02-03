@@ -12,9 +12,9 @@ import java.util.List;
 @Service
 public class CredentialService {
 
-    private CredentialMapper credentialMapper;
-    private EncryptionService encryptionService;
-    private UserMapper userMapper;
+    private final CredentialMapper credentialMapper;
+    private final EncryptionService encryptionService;
+    private final UserMapper userMapper;
 
     public CredentialService(CredentialMapper credentialMapper, EncryptionService encryptionService, UserMapper userMapper) {
         this.credentialMapper = credentialMapper;
@@ -24,7 +24,7 @@ public class CredentialService {
 
     public List<Credential> getCredentialsForUser(String userName) {
         var userId = this.userMapper.getUser(userName).getUserId();
-        return this.credentialMapper.getNotesForUser(userId);
+        return this.credentialMapper.getCredentialsForUser(userId);
     }
 
     public void addCredential(CredentialForm credentialForm, String userName) {

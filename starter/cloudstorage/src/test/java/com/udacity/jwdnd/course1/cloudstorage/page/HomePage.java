@@ -46,6 +46,42 @@ public class HomePage {
     @FindBy(css=".note-delete-button")
     private List<WebElement> deleteNoteButtons;
 
+    @FindBy(css="#nav-credentials-tab")
+    private WebElement credentialsTab;
+
+    @FindBy(css="#new-credential-button")
+    private WebElement newCredentialButton;
+
+    @FindBy(css="#credential-url")
+    private WebElement credentialUrl;
+
+    @FindBy(css="#credential-username")
+    private WebElement credentialUserName;
+
+    @FindBy(css="#credential-password")
+    private WebElement credentialPassword;
+
+    @FindBy(css="#credential-save-changes-button")
+    private WebElement credentialSubmitButton;
+
+    @FindBy(css="#credentialTable")
+    private WebElement credentialTableBody;
+
+    @FindBy(css=".credential-url")
+    private List<WebElement> credentialUrls;
+
+    @FindBy(css=".credential-username")
+    private List<WebElement> credentialUserNames;
+
+    @FindBy(css=".encrypted-credential-password")
+    private List<WebElement> encryptedPasswords;
+
+    @FindBy(css=".credential-edit-button")
+    private List<WebElement> editCredentialButtons;
+
+    @FindBy(css=".credential-delete-button")
+    private List<WebElement> deleteCredentialButtons;
+
     private final WebDriver webDriver;
 
     public HomePage(WebDriver webDriver) {
@@ -59,6 +95,11 @@ public class HomePage {
         this.logoutForm.submit();
     }
 
+    public void selectNotesTab() throws InterruptedException {
+        Thread.sleep(500);
+        new WebDriverWait(this.webDriver, 5).until(ExpectedConditions.elementToBeClickable(this.notesTab)).click();
+    }
+
     public void createNote(String noteTitle, String noteDescription) {
 
         new WebDriverWait(webDriver, 2).until(ExpectedConditions.elementToBeClickable(this.newNoteButton)).click();
@@ -66,11 +107,6 @@ public class HomePage {
         new WebDriverWait(webDriver, 2).until(ExpectedConditions.elementToBeClickable(this.noteTitle)).sendKeys(noteTitle);
         this.noteDescription.sendKeys(noteDescription);
         this.noteSubmitButton.click();
-    }
-
-    public void selectNotesTab() throws InterruptedException {
-        Thread.sleep(500);
-        new WebDriverWait(this.webDriver, 5).until(ExpectedConditions.elementToBeClickable(this.notesTab)).click();
     }
 
     public List<String> getNoteTitles() {
@@ -100,7 +136,69 @@ public class HomePage {
 
     public void deleteFirstNote() {
         new WebDriverWait(webDriver, 2).until(ExpectedConditions.visibilityOf(this.noteTableBody));
-        Optional<WebElement> firstEditNoteButton = this.deleteNoteButtons.stream().findFirst();
-        firstEditNoteButton.ifPresent(WebElement::click);
+        Optional<WebElement> firstDeleteNoteButton = this.deleteNoteButtons.stream().findFirst();
+        firstDeleteNoteButton.ifPresent(WebElement::click);
+    }
+
+    public void selectCredentialsTab() throws InterruptedException {
+        Thread.sleep(500);
+        new WebDriverWait(this.webDriver, 5).until(ExpectedConditions.elementToBeClickable(this.credentialsTab)).click();
+
+    }
+
+    public void createCredential(String url, String userName, String password) {
+
+        new WebDriverWait(webDriver, 2).until(ExpectedConditions.elementToBeClickable(this.newCredentialButton)).click();
+
+        new WebDriverWait(webDriver, 2).until(ExpectedConditions.elementToBeClickable(this.credentialUrl)).sendKeys(url);
+        this.credentialUserName.sendKeys(userName);
+        this.credentialPassword.sendKeys(password);
+        this.credentialSubmitButton.click();
+    }
+
+    public List<String> getCredentialUrls() {
+        new WebDriverWait(webDriver, 2).until(ExpectedConditions.visibilityOf(this.credentialTableBody));
+        return this.credentialUrls.stream().map(WebElement::getText).collect(Collectors.toList());
+    }
+
+    public List<String> getCredentialUserNames() {
+        new WebDriverWait(webDriver, 2).until(ExpectedConditions.visibilityOf(this.credentialTableBody));
+        return this.credentialUserNames.stream().map(WebElement::getText).collect(Collectors.toList());
+    }
+
+    public List<String> getEncryptedCredentialPasswords() {
+        new WebDriverWait(webDriver, 2).until(ExpectedConditions.visibilityOf(this.credentialTableBody));
+        return this.encryptedPasswords.stream().map(WebElement::getText).collect(Collectors.toList());
+    }
+
+    public void openEditModalForFirstCredential() {
+        new WebDriverWait(webDriver, 2).until(ExpectedConditions.visibilityOf(this.credentialTableBody));
+        Optional<WebElement> firstEditCredentialButton = this.editCredentialButtons.stream().findFirst();
+        firstEditCredentialButton.ifPresent(WebElement::click);
+    }
+
+    public String getDecryptedPassword(){
+        new WebDriverWait(webDriver, 2).until(ExpectedConditions.elementToBeClickable(this.credentialPassword));
+        return this.credentialPassword.getAttribute("value");
+    }
+
+    public void editCredential(String url, String userName, String password) {
+        new WebDriverWait(webDriver, 2).until(ExpectedConditions.elementToBeClickable(this.credentialUrl));
+        this.credentialUrl.clear();
+        this.credentialUrl.sendKeys(url);
+
+        this.credentialUserName.clear();
+        this.credentialUserName.sendKeys(userName);
+
+        this.credentialPassword.clear();
+        this.credentialPassword.sendKeys(password);
+        
+        this.credentialSubmitButton.click();
+    }
+
+    public void deleteFirstCredential() {
+        new WebDriverWait(webDriver, 2).until(ExpectedConditions.visibilityOf(this.credentialTableBody));
+        Optional<WebElement> firstDeleteCredentialButton = this.deleteCredentialButtons.stream().findFirst();
+        firstDeleteCredentialButton.ifPresent(WebElement::click);
     }
 }

@@ -127,7 +127,7 @@
                         </div>
                     </div>
                     <div class="tab-pane fade" id="nav-credentials" role="tabpanel" aria-labelledby="nav-credentials-tab">
-                        <button style="margin: 0.25em;" type="button" class="btn btn-info float-right" onclick="showCredentialModal()">
+                        <button id="new-credential-button" style="margin: 0.25em;" type="button" class="btn btn-info float-right" onclick="showCredentialModal()">
                             + Add a New Credential
                         </button>
 
@@ -144,18 +144,18 @@
                                 <tbody>
                                 <tr th:each="credential : ${credentials}">
                                     <td>
-                                        <button type="button" class="btn btn-success"
+                                        <button type="button" class="credential-edit-button btn btn-success"
                                                 th:data-id="${credential.getCredentialId()}"
                                                 th:data-url="${credential.getUrl()}"
                                                 th:data-username="${credential.getUserName()}"
                                                 th:data-decryptedPassword = "${encryptionService.decryptValue(credential.getPassword(), credential.getKey())}"
                                                 th:onclick="showCredentialModal(this.getAttribute('data-id'), this.getAttribute('data-url'), this.getAttribute('data-username'), this.getAttribute('data-decryptedPassword'))">Edit</button>
-                                        <a class="btn btn-danger"
+                                        <a class="credential-delete-button btn btn-danger"
                                            th:href="@{/credential/delete-credential/{credentialId}(credentialId = ${credential.getCredentialId()})}">Delete</a>
                                     </td>
-                                    <th th:text="${credential.getUrl()}" scope="row"></th>
-                                    <td th:text="${credential.getUserName()}"></td>
-                                    <td th:text="${credential.getPassword()}"></td>
+                                    <th class="credential-url" th:text="${credential.getUrl()}" scope="row"></th>
+                                    <td class="credential-username" th:text="${credential.getUserName()}"></td>
+                                    <td class="encrypted-credential-password" th:text="${credential.getPassword()}"></td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -190,7 +190,7 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                        <button type="button" class="btn btn-primary" onclick="$('#credentialSubmit').click();">Save changes</button>
+                                        <button id="credential-save-changes-button" type="button" class="btn btn-primary" onclick="$('#credentialSubmit').click();">Save changes</button>
                                     </div>
                                 </div>
                             </div>
